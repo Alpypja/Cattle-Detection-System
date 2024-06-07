@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cattle Detection System</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="alertUser.js">
+    <style>
+        /* Styles for the modal */
+        body{
+            font-family:cursive;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+            border-radius: 5px;
+        }
+        .navbar {
+            background-color: #333;
+            overflow: hidden;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+        }
+
+        .navbar-brand {
+            color: white;
+            text-decoration: none;
+            font-size: 24px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px;
+            font-size: 18px;
+            text-transform:initial;
+            letter-spacing: 1px;
+        }
+
+        .nav-links button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-left: 20px;
+        }
+
+        .nav-links button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation Bar -->
+     <div class="navbar">
+        <div class="logo">Cattle Detection System</div>
+        <div class="nav-links">
+            <!-- Button to open camera modal  -->
+            <!-- <a href="theotherone.html">Home</a> <br><br> -->
+            <button id="openCameraButton" style="background-color: #4CAF50; /* Green */
+                                    border: none;
+                                    color: white;
+                                    padding: 15px 32px;
+                                    text-align: center;
+                                    text-decoration: none;
+                                    display: inline-block;
+                                    font-size: 16px;
+                                    margin: 4px 2px;
+                                    cursor: pointer;">Open CCTV Camera</button>
+                                    
+            <a href="registration.html">User Registration</a>
+        </div>
+        
+    </div> 
+  
+    <!-- Cattle Templates -->
+    <div class="template-container">
+        <div class="template-column">
+            <div class="template">
+                <h2>Cow</h2>
+                <img src="data\COW Image.jpg" alt="Cow" />
+                <p>Cows are one of the most common types of domesticated animals, raised for their milk, meat, and
+                    hides.</p>
+            </div>
+            <div class="template">
+                <h2>Dog</h2>
+                <img src="data\DOG Image.jpg" alt="Dog" />
+                <p>Dogs are known for their loyalty and companionship. They are often kept as pets and used for various
+                    tasks such as herding, hunting, and guarding.</p>
+            </div>
+            <div class="template">
+                <h2>Goat</h2>
+                <img src="data\GOAT Image.jpg" alt="Goat" />
+                <p>Goats are raised for their milk, meat, and fibers. They are known for their adaptability and can
+                    thrive in various environments.</p>
+            </div>
+        </div>
+        <div class="template-column">
+            <div class="template">
+                <h2>Cat</h2>
+                <img src="data\CAT Image.jpg" alt="Cat" />
+                <p>Cats are popular pets known for their independence and agility. They are often kept indoors as
+                    companions.</p>
+            </div>
+            <div class="template">
+                <h2>Donkey</h2>
+                <img src="data\DONKEY IMAGE.jpg" alt="Donkey" />
+                <p>Donkeys are domesticated animals used for various tasks such as carrying heavy loads and working in
+                    agriculture.</p>
+            </div>
+            <!-- Add more templates here -->
+        </div>
+    </div>
+
+    <!-- Modal for camera -->
+    <div id="cameraModal" class="modal">
+        <div class="modal-content">
+            <video id="videoElement" autoplay></video>
+        </div>
+    </div>
+
+    <script>
+        // Function to open camera modal and immediately capture image
+        document.getElementById('openCameraButton').addEventListener('click', function () {
+            startCameraAndCapture();
+        });
+
+        // Function to start camera and capture image
+        async function startCameraAndCapture() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                const videoElement = document.getElementById('videoElement');
+                videoElement.srcObject = stream;
+
+                // Wait for a short delay to ensure the camera is ready
+                await new Promise(resolve => setTimeout(resolve, 1000));
+
+                // Capture image from video stream
+                const canvas = document.createElement('canvas');
+                canvas.width = videoElement.videoWidth;
+                canvas.height = videoElement.videoHeight;
+                canvas.getContext('2d').drawImage(videoElement, 0, 0);
+
+                // Convert canvas to base64 encoded image data
+                const imageData = canvas.toDataURL('image/jpeg');
+                console.log('Captured image data:', imageData);
+                await saveImageToFolder(imageData);
+                // Show alert message
+                showAlert('Image captured successfully!', 2000); // Display alert for 3 seconds
+
+                // Stop video stream
+                stream.getTracks().forEach(track => track.stop());
+            } catch (err) {
+                console.error('Error accessing camera:', err);
+            }
+        }
+        function saveImageToFolder(imageData) {
+            // Create FormData object
+            const formData = new FormData();
+            formData.append('image', imageData);
+            formData.append('fileName', "Donkey");
+            formData.append('rfid', "1233123129");
+
+            // Send AJAX request to server to save image
+            fetch('http://localhost:3000/upload', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Prediction result:', data);
+                    // Handle the prediction result if needed
+                })
+                .catch(error => {
+                    console.error('Error processing image:', error);
+                    // Handle errors
+                });
+        }
+
+        // Function to show alert message with auto hide after a specified duration
+        function showAlert(message, duration) {
+            const alertDiv = document.createElement('div');
+            alertDiv.textContent = message;
+            alertDiv.style.position = 'fixed';
+            alertDiv.style.top = '20px';
+            alertDiv.style.left = '50%';
+            alertDiv.style.transform = 'translateX(-50%)';
+            alertDiv.style.backgroundColor = '#007bff';
+            alertDiv.style.color = '#fff';
+            alertDiv.style.padding = '10px 20px';
+            alertDiv.style.borderRadius = '5px';
+            alertDiv.style.zIndex = '9999';
+            alertDiv.style.transition = 'opacity 0.5s ease';
+            document.body.appendChild(alertDiv);
+
+            // Hide alert after specified duration
+            setTimeout(function () {
+                alertDiv.style.opacity = '0';
+                setTimeout(function () {
+                    alertDiv.remove();
+                }, 500);
+            }, duration);
+        }
+    </script>
+</body>
+
+</html>

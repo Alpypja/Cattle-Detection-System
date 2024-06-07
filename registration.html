@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Registration</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f2f2f2;
+        }
+
+        .navbar {
+            background-color: #333;
+            overflow: hidden;
+        }
+
+        .navbar-brand {
+            float: left;
+            padding: 16px 20px;
+            color: white;
+            text-decoration: none;
+            font-size: 20px;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 50px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: #403d3d;
+            color: #fff;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-right: auto;
+            /* Pushes the logo to the left */
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-links a,
+        .nav-links button {
+            margin-left: 20px;
+            /* Add margin to create space between elements */
+            color: #fff;
+            text-decoration: none;
+            background-color: #555;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            /* Transition effect */
+        }
+
+        .nav-links button:hover {
+            background-color: #777;
+            /* Change background color on hover */
+        }
+
+        /* Home Container */
+        .home-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 20px auto;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation Bar -->
+    <div class="navbar">
+        <div class="logo">Cattle Detection System</div>
+        <div class="nav-links">
+            <!-- Button to open camera modal -->
+            <a href="theotherone.html">Home</a> <br><br>
+
+        </div>
+
+    </div>
+
+    <form class="container" >
+        <h2>User Registration Form</h2>
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required>
+
+        <label for="number">Number:</label>
+        <input type="text" id="number" name="number" required>
+
+        <label for="rfid">RFID:</label>
+        <input type="text" id="rfid" name="rfid" required>
+
+        <label for="cattleName">Cattle Name:</label>
+        <input type="text" id="cattleName" name="cattleName" required>
+
+        <button id="submit-btn">Submit</button>
+    </form>
+
+    <!-- <script>
+        const form = document.querySelector("form");
+
+        document
+            .getElementById("submit-btn")
+            .addEventListener("click", function (event) {
+                registerUser(event);
+            });
+
+        async function registerUser(event) {
+
+            event.preventDefault();
+
+            const name = document.getElementById('name').value;
+            const number = document.getElementById('number').value;
+            const rfid = document.getElementById('rfid').value;
+            const cattleName = document.getElementById('cattleName').value;
+
+            const userData = {
+                name: name,
+                number: number,
+                rfid: rfid,
+                cattleName: cattleName
+            };
+
+            try {
+                const response = await fetch('http://localhost:3000/api/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(userData)
+                });
+
+                const result = await response.json();
+                console.log(result);
+                // You can handle the response here, like showing a success message or redirecting to another page
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+    </script> -->
+    <script>
+        const form = document.querySelector("form");
+    
+        document
+            .getElementById("submit-btn")
+            .addEventListener("click", function (event) {
+                registerUser(event);
+            });
+    
+        async function registerUser(event) {
+            event.preventDefault();
+    
+            const name = document.getElementById('name').value;
+            const number = document.getElementById('number').value;
+            const rfid = document.getElementById('rfid').value;
+            const cattleName = document.getElementById('cattleName').value;
+    
+            const userData = {
+                name: name,
+                number: number,
+                rfid: rfid,
+                cattleName: cattleName
+            };
+    
+            try {
+                const response = await fetch('http://localhost:3000/api/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(userData)
+                });
+    
+                const result = await response.json();
+                console.log(result);
+    
+                // Show success message
+                const successMessage = document.createElement('p');
+                successMessage.textContent = 'Registration successful!';
+                document.querySelector('.container').appendChild(successMessage);
+    
+                // Prevent form from clearing
+                form.reset(); // Remove this line to prevent clearing the form
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+    </script>
+    
+</body>
+
+</html>
