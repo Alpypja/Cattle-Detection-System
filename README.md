@@ -33,7 +33,7 @@ The Proactive Cattle Detection System is designed to detect cattle on roads usin
 
 ## System Architecture
 
-![System Architecture](https://path_to_your_image.com/architecture.png)
+
 
 The system architecture consists of:
 1. **CCTV Camera**: Captures video feed.
